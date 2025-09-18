@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fuente base y colores del brand */
+:root { color-scheme: light dark; }
+body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
