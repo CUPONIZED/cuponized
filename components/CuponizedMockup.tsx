@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Heart, ChevronLeft, Filter, Sun, Moon, Ticket } from "lucide-react";
+import { Heart, ChevronLeft, Filter, Sun, Moon, Ticket, Menu, X } from "lucide-react";
 
 type Coupon = {
   id: number;
@@ -32,6 +32,9 @@ export default function CuponizedMockup() {
   const [favorites, setFavorites] = useState<number[]>([]);
   const [currentBrand, setCurrentBrand] = useState<string>("");
   const [currentCategory, setCurrentCategory] = useState<string>("");
+
+  // Menú móvil
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Dark mode persistente
   const prefersDark =
@@ -84,36 +87,90 @@ export default function CuponizedMockup() {
     localStorage.setItem("cuponized-clicks", JSON.stringify([entry, ...prev].slice(0, 200)));
   }
 
+  // ====== Header responsive con menú lateral en móvil ======
   function Header({ onBack }: { onBack?: () => void }) {
     return (
-      <div className="sticky top-0 z-10 bg-white/90 dark:bg-neutral-900/90 backdrop-blur border-b border-gray-200 dark:border-neutral-800">
-        <div className="max-w-4xl mx-auto p-4 flex items-center gap-3">
-          {onBack && (
-            <button className="p-2 rounded-lg border hover:bg-gray-50 dark:hover:bg-neutral-800" onClick={onBack}>
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-          )}
-        <div className="flex items-center gap-2">
-            <div className="bg-gradient-to-r from-[#9333EA] to-[#EC4899] p-2 rounded-lg">
-              <Ticket className="h-5 w-5 text-white" />
+      <>
+        <div className="sticky top-0 z-30 bg-white/90 dark:bg-neutral-900/90 backdrop-blur border-b border-gray-200 dark:border-neutral-800">
+          <div className="max-w-4xl mx-auto p-4 flex items-center gap-3">
+            {onBack && (
+              <button className="p-2 rounded-lg border hover:bg-gray-50 dark:hover:bg-neutral-800" onClick={onBack} aria-label="Volver">
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+            )}
+
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <div className="bg-gradient-to-r from-[#9333EA] to-[#EC4899] p-2 rounded-lg">
+                <Ticket className="h-5 w-5 text-white" />
+              </div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-[#9333EA] to-[#EC4899] bg-clip-text text-transparent">
+                CUPONIZED
+              </h1>
             </div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-[#9333EA] to-[#EC4899] bg-clip-text text-transparent">CUPONIZED</h1>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <button className="px-3 py-2 rounded-lg border" onClick={() => setScreen("favorites")}>Favoritos</button>
-            <button className="px-3 py-2 rounded-lg border" onClick={() => { setCurrentBrand(""); setScreen("brand"); }}>Tiendas</button>
-            <button className="px-3 py-2 rounded-lg border" onClick={() => { setCurrentCategory(""); setScreen("category"); }}>Categorías</button>
-            <button className="p-2 rounded-lg border" onClick={() => setDark(v => !v)}>{dark ? <Sun /> : <Moon />}</button>
+
+            {/* Acciones desktop */}
+            <div className="ml-auto hidden sm:flex items-center gap-2">
+              <button className="px-3 py-2 rounded-lg border" onClick={() => setScreen("favorites")}>Favoritos</button>
+              <button className="px-3 py-2 rounded-lg border" onClick={() => { setCurrentBrand(""); setScreen("brand"); }}>Tiendas</button>
+              <button className="px-3 py-2 rounded-lg border" onClick={() => { setCurrentCategory(""); setScreen("category"); }}>Categorías</button>
+              <button className="p-2 rounded-lg border" onClick={() => setDark(v => !v)} aria-label="Cambiar tema">
+                {dark ? <Sun /> : <Moon />}
+              </button>
+            </div>
+
+            {/* Botón menú móvil */}
+            <div className="ml-auto sm:hidden">
+              <button className="p-2 rounded-lg border" onClick={() => setMobileMenuOpen(true)} aria-label="Abrir menú">
+                <Menu />
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+
+        {/* Panel lateral móvil */}
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 z-40">
+            {/* overlay */}
+            <button className="absolute inset-0 bg-black/40" onClick={() => setMobileMenuOpen(false)} aria-label="Cerrar menú" />
+            {/* panel */}
+            <div className="absolute right-0 top-0 h-full w-72 max-w-[85%] bg-white dark:bg-neutral-900 border-l border-gray-200 dark:border-neutral-800 shadow-xl p-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold">Menú</span>
+                <button className="p-2 rounded-lg border" onClick={() => setMobileMenuOpen(false)} aria-label="Cerrar">
+                  <X />
+                </button>
+              </div>
+
+              <button className="w-full px-3 py-2 rounded-lg border text-left" onClick={() => { setScreen("favorites"); setMobileMenuOpen(false); }}>
+                Favoritos
+              </button>
+              <button className="w-full px-3 py-2 rounded-lg border text-left" onClick={() => { setCurrentBrand(""); setScreen("brand"); setMobileMenuOpen(false); }}>
+                Tiendas
+              </button>
+              <button className="w-full px-3 py-2 rounded-lg border text-left" onClick={() => { setCurrentCategory(""); setScreen("category"); setMobileMenuOpen(false); }}>
+                Categorías
+              </button>
+
+              <div className="mt-2 border-t border-gray-200 dark:border-neutral-800 pt-3">
+                <button className="w-full px-3 py-2 rounded-lg border flex items-center justify-between" onClick={() => setDark(v => !v)}>
+                  <span>Tema</span>{dark ? <Sun /> : <Moon />}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
     );
   }
+  // ====== /Header ======
 
   function Pill({ active, children, onClick }: { active: boolean; children: React.ReactNode; onClick: () => void }) {
     return (
-      <button onClick={onClick}
-        className={`px-3 py-1 rounded-full text-sm border ${active ? "bg-gray-900 text-white dark:bg-white dark:text-black" : "bg-transparent"}`}>
+      <button
+        onClick={onClick}
+        className={`px-3 py-1 rounded-full text-sm border ${active ? "bg-gray-900 text-white dark:bg-white dark:text-black" : "bg-transparent"}`}
+      >
         {children}
       </button>
     );
@@ -124,7 +181,7 @@ export default function CuponizedMockup() {
       {screen === "home" && (
         <>
           <Header />
-          <main className="max-w-4xl mx-auto p-4">
+          <main className="max-w-4xl mx-auto p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row gap-2 mb-6">
               <div className="flex-1">
                 <input
@@ -170,7 +227,7 @@ export default function CuponizedMockup() {
       {screen === "detail" && selected && (
         <>
           <Header onBack={() => setScreen("home")} />
-          <main className="max-w-2xl mx-auto p-4">
+          <main className="max-w-2xl mx-auto p-4 sm:p-6">
             <div className="rounded-2xl border border-gray-200 dark:border-neutral-800 p-5 space-y-4">
               <h2 className="text-2xl font-semibold">{selected.title}</h2>
               <p className="text-gray-600 dark:text-neutral-400">{selected.description}</p>
@@ -178,12 +235,20 @@ export default function CuponizedMockup() {
               {selected.code ? (
                 <div className="p-4 bg-gray-100 dark:bg-neutral-900 rounded-xl flex justify-between items-center">
                   <p className="font-mono text-lg">{selected.code}</p>
-                  <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                    onClick={() => { trackClick(selected); window.open(affiliateUrl(selected), "_blank"); }}>Usar</button>
+                  <button
+                    className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
+                    onClick={() => { trackClick(selected); window.open(affiliateUrl(selected), "_blank"); }}
+                  >
+                    Usar
+                  </button>
                 </div>
               ) : (
-                <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                  onClick={() => { trackClick(selected); window.open(affiliateUrl(selected), "_blank"); }}>Ir a la tienda</button>
+                <button
+                  className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
+                  onClick={() => { trackClick(selected); window.open(affiliateUrl(selected), "_blank"); }}
+                >
+                  Ir a la tienda
+                </button>
               )}
             </div>
           </main>
@@ -193,7 +258,7 @@ export default function CuponizedMockup() {
       {screen === "favorites" && (
         <>
           <Header onBack={() => setScreen("home")} />
-          <main className="max-w-2xl mx-auto p-4">
+          <main className="max-w-2xl mx-auto p-4 sm:p-6">
             <div className="grid gap-4">
               {COUPONS.filter((c) => favorites.includes(c.id)).map((c) => (
                 <div key={c.id} className="rounded-2xl border border-gray-200 dark:border-neutral-800 p-4 flex items-center justify-between">
@@ -201,8 +266,12 @@ export default function CuponizedMockup() {
                     <h3 className="font-semibold">{c.title}</h3>
                     <p className="text-xs text-gray-500">{c.brand}</p>
                   </div>
-                  <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}>Ir</button>
+                  <button
+                    className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
+                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}
+                  >
+                    Ir
+                  </button>
                 </div>
               ))}
               {favorites.length === 0 && <p className="text-sm text-gray-500 dark:text-neutral-400">Todavía no guardaste cupones.</p>}
@@ -214,7 +283,7 @@ export default function CuponizedMockup() {
       {screen === "brand" && (
         <>
           <Header onBack={() => setScreen("home")} />
-          <main className="max-w-4xl mx-auto p-4">
+          <main className="max-w-4xl mx-auto p-4 sm:p-6">
             {!currentBrand && (
               <div className="grid sm:grid-cols-2 gap-3 mb-4">
                 {[...new Set(COUPONS.map((c) => c.brand))].map((b) => (
@@ -229,8 +298,12 @@ export default function CuponizedMockup() {
                     <h3 className="font-semibold">{c.brand} · {c.title}</h3>
                     <p className="text-xs text-gray-500">Vence: {new Date(c.expires).toLocaleDateString()}</p>
                   </div>
-                  <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}>Ir</button>
+                  <button
+                    className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
+                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}
+                  >
+                    Ir
+                  </button>
                 </div>
               ))}
             </div>
@@ -241,7 +314,7 @@ export default function CuponizedMockup() {
       {screen === "category" && (
         <>
           <Header onBack={() => setScreen("home")} />
-          <main className="max-w-4xl mx-auto p-4">
+          <main className="max-w-4xl mx-auto p-4 sm:p-6">
             {!currentCategory && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {CATEGORIES.filter((c) => c !== "Todas").map((cat) => (
@@ -256,8 +329,12 @@ export default function CuponizedMockup() {
                     <h3 className="font-semibold">{c.category} · {c.title}</h3>
                     <p className="text-xs text-gray-500">{c.brand}</p>
                   </div>
-                  <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}>Ir</button>
+                  <button
+                    className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
+                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}
+                  >
+                    Ir
+                  </button>
                 </div>
               ))}
             </div>
@@ -267,3 +344,4 @@ export default function CuponizedMockup() {
     </div>
   );
 }
+
