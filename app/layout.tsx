@@ -1,36 +1,31 @@
 import "./globals.css";
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Cuponized – Cupones y descuentos",
-  description: "Encontrá cupones verificados por tienda y categoría.",
-  // 👇 acá declaramos tus íconos
+  description: "Encontrá cupones y descuentos actualizados en Cuponized",
   icons: {
     icon: [
-      { url: "/favicon.ico", type: "image/x-icon" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "icon", url: "/favicon.ico" },
+      { rel: "icon", type: "image/png", sizes: "96x96", url: "/favicon-96x96.png" },
+      { rel: "icon", type: "image/svg+xml", url: "/favicon.svg" },
+      { rel: "apple-touch-icon", sizes: "180x180", url: "/apple-touch-icon.png" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: "/favicon.ico",
   },
   manifest: "/site.webmanifest",
 };
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="es" suppressHydrationWarning>
-      <body className="min-h-screen bg-gray-50 text-gray-900 dark:bg-neutral-950 dark:text-neutral-100 overflow-x-hidden antialiased">
+    <html lang="es">
+      <body className="bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-neutral-100">
         {children}
       </body>
     </html>
   );
 }
-
