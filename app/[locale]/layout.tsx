@@ -41,10 +41,9 @@ export default async function LocaleLayout({
   const { locale } = params;
   unstable_setRequestLocale(locale);
 
-  // Carga segura de mensajes (next-intl)
+  // 👇 Ahora sí, esto funciona porque agregamos el plugin + request.ts
   const messages = await getMessages();
 
-  // 👇 Nada de <html>/<body> aquí
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
       <div className="min-h-screen">{children}</div>
@@ -52,3 +51,4 @@ export default async function LocaleLayout({
     </NextIntlClientProvider>
   );
 }
+
