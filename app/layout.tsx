@@ -1,5 +1,7 @@
+// app/layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
+import Footer from "../components/Footer"; // <- IMPORTANTE (ruta relativa)
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cuponized.com";
 
@@ -37,9 +39,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" suppressHydrationWarning>
       <body className="bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-neutral-100">
-        {children}
+        {/* Ocupa el alto de la pantalla para que el footer quede abajo */}
+        <div className="min-h-screen">{children}</div>
+        <Footer />
       </body>
     </html>
   );
 }
-
