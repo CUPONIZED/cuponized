@@ -1,0 +1,26 @@
+{
+  "UI": {
+    "brand": "CUPONIZED",
+    "favorites": "Favorites",
+    "stores": "Stores",
+    "categories": "Categories",
+    "search": "Search coupons...",
+    "seeCoupon": "See coupon",
+    "goToStore": "Go to store",
+    "expires": "Expires",
+    "all": "All",
+    "fashion": "Fashion",
+    "tech": "Tech",
+    "food": "Food",
+    "theme": "Theme",
+    "langSwitch": "ES"
+  },
+  "Footer": {
+    "title": "Cuponized.com",
+    "about": "About us",
+    "legal": "Legal notice",
+    "copy": "© Cuponized™ 2024–2025. Your ally to save every day.",
+    "origin": "An independent initiative born in Argentina 🇦🇷",
+    "love": "❤️ Made with passion for those who want to pay less."
+  }
+}
