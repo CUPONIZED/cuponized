@@ -1,7 +1,10 @@
+// components/CuponizedMockup.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { Heart, ChevronLeft, Filter, Sun, Moon, Ticket } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
+import Link from "next/link";
 
 type Coupon = {
   id: number;
@@ -19,7 +22,7 @@ const COUPONS: Coupon[] = [
   { id: 1, brand: "Nike", title: "20% OFF en zapatillas", description: "Descuento aplicable en modelos seleccionados.", expires: "2025-09-30", category: "Moda", code: "NIKE20", storeSlug: "nike", baseAffiliateUrl: "https://example.com/nike" },
   { id: 2, brand: "Mercado Libre", title: "Envío gratis + cuotas", description: "Beneficio en productos Full y seleccionados.", expires: "2025-09-22", category: "Tech", code: null, storeSlug: "mercado-libre", baseAffiliateUrl: "https://example.com/mercado-libre" },
   { id: 3, brand: "Burger King", title: "2x1 en Whopper", description: "Válido en locales adheridos.", expires: "2025-09-17", category: "Comida", code: "BK-2X1", storeSlug: "burger-king", baseAffiliateUrl: "https://example.com/burger-king" },
-  { id: 4, brand: "Adidas", title: "15% OFF en indumentaria", description: "Solo online. Stock limitado.", expires: "2025-10-05", category: "Moda", code: "ADI15", storeSlug: "adidas", baseAffiliateUrl: "https://example.com/adidas" },
+  { id: 4, brand: "Adidas", title: "15% OFF en indumentaria", description: "Solo online. Stock limitado.", expires: "2025-10-05", category: "Moda", code: "ADI15", storeSlug: "adidas", baseAffiliateUrl: "https://example.com/adidas" }
 ];
 
 const CATEGORIES = ["Todas", "Moda", "Tech", "Comida"] as const;
@@ -33,27 +36,22 @@ export default function CuponizedMockup() {
   const [currentBrand, setCurrentBrand] = useState<string>("");
   const [currentCategory, setCurrentCategory] = useState<string>("");
 
-  // Dark mode persistente
-  const prefersDark =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  // i18n
+  const t = useTranslations("UI");
+  const locale = useLocale();
+  const otherLocale = locale === "es" ? "en" : "es";
 
+  // Dark mode persistente
+  const prefersDark = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [dark, setDark] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     const saved = localStorage.getItem("cuponized-theme");
     return saved ? saved === "dark" : prefersDark;
   });
-
   useEffect(() => {
     const root = document.documentElement;
-    if (dark) {
-      root.classList.add("dark");
-      localStorage.setItem("cuponized-theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("cuponized-theme", "light");
-    }
+    if (dark) { root.classList.add("dark"); localStorage.setItem("cuponized-theme","dark"); }
+    else { root.classList.remove("dark"); localStorage.setItem("cuponized-theme","light"); }
   }, [dark]);
 
   const filtered = useMemo(() => {
@@ -67,7 +65,7 @@ export default function CuponizedMockup() {
   function openDetail(coupon: Coupon) { setSelected(coupon); setScreen("detail"); }
   function toggleFavorite(id: number) { setFavorites((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id])); }
 
-  // Tracking + URL (mock simple por ahora)
+  // Tracking + URL (mock simple)
   function buildSubId(meta: { couponId: number; brand: string }) {
     const d = new Date();
     const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}${String(d.getHours()).padStart(2, "0")}${String(d.getMinutes()).padStart(2, "0")}`;
@@ -93,19 +91,23 @@ export default function CuponizedMockup() {
               <ChevronLeft className="h-5 w-5" />
             </button>
           )}
-          <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
+          {/* Logo -> vuelve al inicio */}
+          <Link href={`/${locale}`} className="flex items-center gap-2">
             <div className="bg-gradient-to-r from-[#9333EA] to-[#EC4899] p-2 rounded-lg">
               <Ticket className="h-5 w-5 text-white" />
             </div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-[#9333EA] to-[#EC4899] bg-clip-text text-transparent">
-              CUPONIZED
+              {t("brand")}
             </h1>
-          </a>
+          </Link>
+
           <div className="ml-auto flex items-center gap-2">
-            <button className="px-3 py-2 rounded-lg border" onClick={() => setScreen("favorites")}>Favoritos</button>
-            <button className="px-3 py-2 rounded-lg border" onClick={() => { setCurrentBrand(""); setScreen("brand"); }}>Tiendas</button>
-            <button className="px-3 py-2 rounded-lg border" onClick={() => { setCurrentCategory(""); setScreen("category"); }}>Categorías</button>
+            <button className="px-3 py-2 rounded-lg border" onClick={() => setScreen("favorites")}>{t("favorites")}</button>
+            <button className="px-3 py-2 rounded-lg border" onClick={() => { setCurrentBrand(""); setScreen("brand"); }}>{t("stores")}</button>
+            <button className="px-3 py-2 rounded-lg border" onClick={() => { setCurrentCategory(""); setScreen("category"); }}>{t("categories")}</button>
             <button className="p-2 rounded-lg border" onClick={() => setDark(v => !v)}>{dark ? <Sun /> : <Moon />}</button>
+            {/* Switch idioma */}
+            <Link href={`/${otherLocale}`} className="px-2 py-1 rounded-lg border text-sm">{t("langSwitch")}</Link>
           </div>
         </div>
       </div>
@@ -121,6 +123,13 @@ export default function CuponizedMockup() {
     );
   }
 
+  const categoryLabels: Record<(typeof CATEGORIES)[number], string> = {
+    Todas: t("all"),
+    Moda: t("fashion"),
+    Tech: t("tech"),
+    Comida: t("food")
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-neutral-950 dark:text-neutral-100">
       {screen === "home" && (
@@ -130,7 +139,7 @@ export default function CuponizedMockup() {
             <div className="flex flex-col sm:flex-row gap-2 mb-6">
               <div className="flex-1">
                 <input
-                  placeholder="Buscar cupones..."
+                  placeholder={t("search")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="w-full rounded-lg border px-3 py-2 bg-white/70 dark:bg-neutral-900/70 outline-none"
@@ -141,7 +150,7 @@ export default function CuponizedMockup() {
                 <div className="flex flex-wrap gap-2">
                   {CATEGORIES.map((cat) => (
                     <Pill key={cat} active={category === cat} onClick={() => setCategory(cat)}>
-                      {cat}
+                      {categoryLabels[cat]}
                     </Pill>
                   ))}
                 </div>
@@ -153,14 +162,16 @@ export default function CuponizedMockup() {
                 <div key={c.id} className="rounded-2xl border border-gray-200 dark:border-neutral-800 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
                   <div className="flex-1">
                     <h2 className="text-lg font-semibold">{c.title}</h2>
-                    <p className="text-sm text-gray-600 dark:text-neutral-400">{c.brand} · {c.category}</p>
-                    <p className="text-xs text-gray-500">Vence: {new Date(c.expires).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-600 dark:text-neutral-400">{c.brand} · {categoryLabels[c.category]}</p>
+                    <p className="text-xs text-gray-500">{t("expires")}: {new Date(c.expires).toLocaleDateString()}</p>
                   </div>
                   <div className="flex gap-2">
                     <button className="p-2 rounded-lg border" onClick={() => toggleFavorite(c.id)}>
                       <Heart className={`h-5 w-5 ${favorites.includes(c.id) ? "fill-pink-500" : ""}`} />
                     </button>
-                    <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white" onClick={() => openDetail(c)}>Ver cupón</button>
+                    <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white" onClick={() => openDetail(c)}>
+                      {t("seeCoupon")}
+                    </button>
                   </div>
                 </div>
               ))}
@@ -176,16 +187,20 @@ export default function CuponizedMockup() {
             <div className="rounded-2xl border border-gray-200 dark:border-neutral-800 p-5 space-y-4">
               <h2 className="text-2xl font-semibold">{selected.title}</h2>
               <p className="text-gray-600 dark:text-neutral-400">{selected.description}</p>
-              <p className="text-sm text-gray-500">Vence el {new Date(selected.expires).toLocaleDateString()}</p>
+              <p className="text-sm text-gray-500">{t("expires")}: {new Date(selected.expires).toLocaleDateString()}</p>
               {selected.code ? (
                 <div className="p-4 bg-gray-100 dark:bg-neutral-900 rounded-xl flex justify-between items-center">
                   <p className="font-mono text-lg">{selected.code}</p>
                   <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                    onClick={() => { trackClick(selected); window.open(affiliateUrl(selected), "_blank"); }}>Usar</button>
+                    onClick={() => { trackClick(selected); window.open(affiliateUrl(selected), "_blank"); }}>
+                    {t("seeCoupon")}
+                  </button>
                 </div>
               ) : (
                 <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                  onClick={() => { trackClick(selected); window.open(affiliateUrl(selected), "_blank"); }}>Ir a la tienda</button>
+                  onClick={() => { trackClick(selected); window.open(affiliateUrl(selected), "_blank"); }}>
+                  {t("goToStore")}
+                </button>
               )}
             </div>
           </main>
@@ -204,10 +219,14 @@ export default function CuponizedMockup() {
                     <p className="text-xs text-gray-500">{c.brand}</p>
                   </div>
                   <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}>Ir</button>
+                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}>
+                    {t("goToStore")}
+                  </button>
                 </div>
               ))}
-              {favorites.length === 0 && <p className="text-sm text-gray-500 dark:text-neutral-400">Todavía no guardaste cupones.</p>}
+              {favorites.length === 0 && (
+                <p className="text-sm text-gray-500 dark:text-neutral-400">—</p>
+              )}
             </div>
           </main>
         </>
@@ -229,10 +248,12 @@ export default function CuponizedMockup() {
                 <div key={c.id} className="rounded-2xl border border-gray-200 dark:border-neutral-800 p-4 flex items-center justify-between">
                   <div>
                     <h3 className="font-semibold">{c.brand} · {c.title}</h3>
-                    <p className="text-xs text-gray-500">Vence: {new Date(c.expires).toLocaleDateString()}</p>
+                    <p className="text-xs text-gray-500">{t("expires")}: {new Date(c.expires).toLocaleDateString()}</p>
                   </div>
                   <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}>Ir</button>
+                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}>
+                    {t("goToStore")}
+                  </button>
                 </div>
               ))}
             </div>
@@ -247,7 +268,9 @@ export default function CuponizedMockup() {
             {!currentCategory && (
               <div className="flex flex-wrap gap-2 mb-4">
                 {CATEGORIES.filter((c) => c !== "Todas").map((cat) => (
-                  <Pill key={cat} active={false} onClick={() => setCurrentCategory(cat)}>{cat}</Pill>
+                  <Pill key={cat} active={false} onClick={() => setCurrentCategory(cat)}>
+                    {categoryLabels[cat]}
+                  </Pill>
                 ))}
               </div>
             )}
@@ -255,11 +278,13 @@ export default function CuponizedMockup() {
               {COUPONS.filter((c) => !currentCategory || c.category === currentCategory).map((c) => (
                 <div key={c.id} className="rounded-2xl border border-gray-200 dark:border-neutral-800 p-4 flex items-center justify-between">
                   <div>
-                    <h3 className="font-semibold">{c.category} · {c.title}</h3>
+                    <h3 className="font-semibold">{categoryLabels[c.category]} · {c.title}</h3>
                     <p className="text-xs text-gray-500">{c.brand}</p>
                   </div>
                   <button className="px-3 py-2 rounded-lg bg-gradient-to-r from-[#9333EA] to-[#EC4899] text-white"
-                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}>Ir</button>
+                    onClick={() => { trackClick(c); window.open(affiliateUrl(c), "_blank"); }}>
+                    {t("goToStore")}
+                  </button>
                 </div>
               ))}
             </div>
