@@ -7,16 +7,10 @@ export const metadata: Metadata = {
   description: "Cupones y descuentos"
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  // Layout raíz simple. El layout con i18n está en app/[locale]/layout.tsx
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );
 }
-
