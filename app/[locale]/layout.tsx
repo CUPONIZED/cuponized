@@ -1,9 +1,11 @@
-import type {Metadata} from "next";
+// app/[locale]/layout.tsx
+import type { Metadata } from "next";
 import "../globals.css";
 import Footer from "../../components/Footer";
-import {getMessages, unstable_setRequestLocale} from "next-intl/server";
-import {NextIntlClientProvider} from "next-intl";
-import {Locale} from "../../i18n";
+import { unstable_setRequestLocale } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+import { loadMessages } from "./messages";
+import type { Locale } from "../../i18n";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cuponized.com";
 
@@ -15,15 +17,15 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "Cuponized",
-    images: [{url: "/og-default.png", width: 1200, height: 630}]
+    images: [{ url: "/og-default.png", width: 1200, height: 630 }]
   },
-  twitter: {card: "summary_large_image", images: ["/og-default.png"]},
+  twitter: { card: "summary_large_image", images: ["/og-default.png"] },
   icons: {
     icon: [
-      {rel: "icon", url: "/favicon.ico"},
-      {rel: "icon", type: "image/png", sizes: "96x96", url: "/favicon-96x96.png"},
-      {rel: "icon", type: "image/svg+xml", url: "/favicon.svg"},
-      {rel: "apple-touch-icon", sizes: "180x180", url: "/apple-touch-icon.png"}
+      { rel: "icon", url: "/favicon.ico" },
+      { rel: "icon", type: "image/png", sizes: "96x96", url: "/favicon-96x96.png" },
+      { rel: "icon", type: "image/svg+xml", url: "/favicon.svg" },
+      { rel: "apple-touch-icon", sizes: "180x180", url: "/apple-touch-icon.png" }
     ],
     shortcut: "/favicon.ico"
   },
@@ -35,13 +37,12 @@ export default async function LocaleLayout({
   params
 }: {
   children: React.ReactNode;
-  params: {locale: Locale};
+  params: { locale: Locale };
 }) {
-  const {locale} = params;
+  const { locale } = params;
   unstable_setRequestLocale(locale);
 
-  // Cargar mensajes del locale
-  const messages = await getMessages();
+  const messages = await loadMessages(locale);
 
   return (
     <html lang={locale} suppressHydrationWarning>
