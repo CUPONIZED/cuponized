@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import Footer from "../components/Footer";
 
 export const metadata: Metadata = {
   title: "Cuponized – Cupones y descuentos",
@@ -25,7 +26,9 @@ export default function RootLayout({
     <html lang="es">
       <body className="bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-neutral-100">
         {children}
+        <Footer />
       </body>
     </html>
   );
 }
+
