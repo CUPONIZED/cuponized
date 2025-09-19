@@ -18,3 +18,8 @@
     "@types/node": "^20.11.30"
   }
 }
+{
+  "dependencies": {
+    "next-intl": "^3.13.2"
+  }
+}
