@@ -2,9 +2,8 @@
 import type { Metadata } from "next";
 import "../globals.css";
 import Footer from "../../components/Footer";
-import { unstable_setRequestLocale } from "next-intl/server";
+import { unstable_setRequestLocale, getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
-import { loadMessages } from "./messages";
 import type { Locale } from "../../i18n";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://cuponized.com";
@@ -42,7 +41,8 @@ export default async function LocaleLayout({
   const { locale } = params;
   unstable_setRequestLocale(locale);
 
-  const messages = await loadMessages(locale);
+  // 👇 Carga segura de mensajes
+  const messages = await getMessages();
 
   return (
     <html lang={locale} suppressHydrationWarning>
