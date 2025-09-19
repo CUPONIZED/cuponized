@@ -41,17 +41,14 @@ export default async function LocaleLayout({
   const { locale } = params;
   unstable_setRequestLocale(locale);
 
-  // 👇 Carga segura de mensajes
+  // Carga segura de mensajes (next-intl)
   const messages = await getMessages();
 
+  // 👇 Nada de <html>/<body> aquí
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className="bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-neutral-100">
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <div className="min-h-screen">{children}</div>
-          <Footer />
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages} locale={locale}>
+      <div className="min-h-screen">{children}</div>
+      <Footer />
+    </NextIntlClientProvider>
   );
 }
