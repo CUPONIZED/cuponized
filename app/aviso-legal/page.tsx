@@ -1,4 +1,26 @@
 "use client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Aviso legal | Cuponized",
+  description: "Información sobre enlaces de afiliado y responsabilidad de las ofertas publicadas.",
+  alternates: {
+    canonical: "/aviso-legal",
+    languages: { es: "/aviso-legal", en: "/legal-notice" },
+  },
+  openGraph: {
+    title: "Aviso legal | Cuponized",
+    description: "Información sobre enlaces de afiliado y responsabilidad de las ofertas publicadas.",
+    url: "/aviso-legal",
+    images: ["/og-default.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aviso legal | Cuponized",
+    description: "Información sobre enlaces de afiliado y responsabilidad de las ofertas publicadas.",
+    images: ["/og-default.png"],
+  },
+};
 
 export default function AvisoLegal() {
   return (
