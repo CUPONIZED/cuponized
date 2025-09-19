@@ -1,4 +1,26 @@
 "use client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About us | Cuponized",
+  description: "Who we are and how we help you save with verified coupons.",
+  alternates: {
+    canonical: "/about-us",
+    languages: { en: "/about-us", es: "/sobre-nosotros" },
+  },
+  openGraph: {
+    title: "About us | Cuponized",
+    description: "Who we are and how we help you save with verified coupons.",
+    url: "/about-us",
+    images: ["/og-default.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About us | Cuponized",
+    description: "Who we are and how we help you save with verified coupons.",
+    images: ["/og-default.png"],
+  },
+};
 
 export default function AboutUs() {
   return (
