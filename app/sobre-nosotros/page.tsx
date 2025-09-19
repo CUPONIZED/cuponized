@@ -1,4 +1,26 @@
 "use client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sobre nosotros | Cuponized",
+  description: "Quiénes somos y cómo te ayudamos a ahorrar con cupones verificados.",
+  alternates: {
+    canonical: "/sobre-nosotros",
+    languages: { es: "/sobre-nosotros", en: "/about-us" },
+  },
+  openGraph: {
+    title: "Sobre nosotros | Cuponized",
+    description: "Quiénes somos y cómo te ayudamos a ahorrar con cupones verificados.",
+    url: "/sobre-nosotros",
+    images: ["/og-default.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sobre nosotros | Cuponized",
+    description: "Quiénes somos y cómo te ayudamos a ahorrar con cupones verificados.",
+    images: ["/og-default.png"],
+  },
+};
 
 export default function SobreNosotros() {
   return (
