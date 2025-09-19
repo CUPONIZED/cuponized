@@ -6,9 +6,14 @@ export default function Footer() {
           Cuponized.com
         </h3>
 
-        <nav className="mt-5 flex items-center justify-center gap-6 text-sm text-gray-600 dark:text-neutral-400">
+        <nav className="mt-5 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600 dark:text-neutral-400">
+          {/* Español */}
           <a href="/sobre-nosotros" className="hover:underline">Sobre nosotros</a>
           <a href="/aviso-legal" className="hover:underline">Aviso legal</a>
+
+          {/* Inglés */}
+          <a href="/about-us" className="hover:underline">About us</a>
+          <a href="/legal-notice" className="hover:underline">Legal notice</a>
         </nav>
 
         <p className="mt-6 text-sm text-gray-600 dark:text-neutral-400">
@@ -26,3 +31,4 @@ export default function Footer() {
     </footer>
   );
 }
+
